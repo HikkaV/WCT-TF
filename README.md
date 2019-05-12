@@ -31,7 +31,7 @@ Optionally:
 * ffmpeg (for video stylization)
 
 
-## Running a pre-trained model
+## Running a pre-trained model without gui
 
 1. Download VGG19 model: `bash models/download_vgg.sh`
 
@@ -40,7 +40,7 @@ Optionally:
 3. Obtain style images. Two good sources are the [Wikiart dataset](https://www.kaggle.com/c/painter-by-numbers) and [Describable Textures Dataset](https://www.robots.ox.ac.uk/~vgg/data/dtd/).
 
 
-   `python webcam.py --checkpoints models/relu5_1 models/relu4_1 models/relu3_1 models/relu2_1 models/relu1_1 --relu-targets relu5_1 relu4_1 relu3_1 relu2_1 relu1_1 --style-size 512 --alpha 0.8 --style-path /path/to/styleimgs` 
+   `python run.py --checkpoints models/relu5_1 models/relu4_1 models/relu3_1 models/relu2_1 models/relu1_1 --relu-targets relu5_1 relu4_1 relu3_1 relu2_1 relu1_1 --style-size 512 --alpha 0.8 --style-path /path/to/styleimgs` 
 
 The args `--checkpoints` and `--relu-targets` specify space-delimited lists of decoder checkpoint folders and corresponding relu layer targets. The order of relu targets determines the stylization pipeline order, where the output of one encoder/decoder becomes the input for the next. Specifying one checkpoint/relu target will perform single-level stylization.
 
@@ -74,7 +74,16 @@ There are also a couple of keyboard shortcuts:
 
 `stylize.py` will stylize content images and does not require OpenCV. The options are the same as for the webcam script with the addition of `--content-path`, which can be a single image file or folder, and `--out-path` to specify the output folder. Each style in `--style-path` will be applied to each content image. 
 
+## Running a pre-trained model with gui
 
+1. Download VGG19 model: `bash models/download_vgg.sh`
+
+2. Download checkpoints for the five decoders: `bash models/download_models.sh`
+
+3. Obtain style images. Two good sources are the [Wikiart dataset](https://www.kaggle.com/c/painter-by-numbers) and [Describable Textures Dataset](https://www.robots.ox.ac.uk/~vgg/data/dtd/).
+
+
+   `python run_with_gui.py` 
 
 
 ## Training decoders
@@ -137,15 +146,7 @@ For example:
 * There is [an open issue](https://github.com/tensorflow/tensorflow/issues/9234) where for some ill-conditioned matrices the CPU version of tf.svd will ungracefully segfault. Adding a small epsilon to the covariance matrices appears to avoid this without visibly affecting the results. If this issue does occur, there is a [commented block](https://github.com/eridgd/WCT-TF/blob/5feea790c0d8ca8dc0ffab5e4ec4664045e7084c/ops.py#L55-L62) that uses np.linalg.svd through tf.py_func. This is stable but incurs a 30%+ performance penalty.
 
 
-## Acknowledgments
 
-Many thanks to the authors Yijun Li & collaborators at UC Merced/Adobe/NVIDIA for their work that inspired this fun project. After building the first version of this TF implementation I discovered their [official Torch implementation](https://github.com/Yijunmaverick/UniversalStyleTransfer) that I referred to in tweaking the WCT op to be more stable.
-
-Thanks also to Xun Huang for the normalized VGG and [Torch version of CORAL](https://github.com/xunhuang1995/AdaIN-style/blob/master/lib/utils.lua).
-
-Windows is now supported thanks to a [torchfile compatibility fix by @xdaimon](https://github.com/bshillingford/python-torchfile/pull/13).
-
-Docker support was graciously [provided by @bryant1410](https://github.com/eridgd/WCT-TF/pull/7).
 
 
 
