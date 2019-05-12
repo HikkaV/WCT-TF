@@ -55,8 +55,6 @@ Other args to take note of:
 * `--keep-colors`  Apply CORAL transform to preserve colors of content
 * `--device`  Device to perform compute on, default `/gpu:0`
 * `--concat`  Append the style image to the stylized output
-* `--noise`  Generate textures from random noise image instead of webcam
-* `--random`  Load a new random image every # of frames
 * `--adain`  Use [Adaptive Instance Normalization](https://arxiv.org/abs/1703.06868) as transfer op instead of WCT
 
 There are also a couple of keyboard shortcuts:
