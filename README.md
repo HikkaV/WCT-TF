@@ -51,10 +51,6 @@ Other args to take note of:
 * `--crop-size`  If specified center-crop a square of this size from the (resized) style image
 * `--alpha`  [0,1] blending of content features + whiten-color transformed features to control degree of stylization
 * `--passes`  # of times to run the stylization pipeline
-* `--source`  Specify camera input ID, default 0
-* `--width` and `--height`  Set the size of camera frames
-* `--video-out`  Write stylized frames to .mp4 out path
-* `--fps`  Frames Per Second for video out
 * `--scale`  Resize content images by this factor before stylizing
 * `--keep-colors`  Apply CORAL transform to preserve colors of content
 * `--device`  Device to perform compute on, default `/gpu:0`
