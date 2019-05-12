@@ -15,24 +15,24 @@ class WCT(object):
     '''Styilze images with trained WCT model'''
 
     def __init__(self, checkpoints, relu_targets, vgg_path, device='/gpu:0',
-                 ss_patch_size=3, ss_stride=1): 
+                 ss_patch_size=3, ss_stride=1):
         '''
             Args:
                 checkpoints: List of trained decoder model checkpoint dirs
                 relu_targets: List of relu target layers corresponding to decoder checkpoints
                 vgg_path: Normalised VGG19 .t7 path
                 device: String for device ID to load model onto
-        '''       
+        '''
         self.ss_patch_size = ss_patch_size
         self.ss_stride = ss_stride
-
+        tf.reset_default_graph()
         graph = tf.get_default_graph()
 
         with graph.device(device):
             # Build the graph
             self.model = WCTModel(mode='test', relu_targets=relu_targets, vgg_path=vgg_path,
                                   ss_patch_size=self.ss_patch_size, ss_stride=self.ss_stride)
-            
+
             self.content_input = self.model.content_input
             self.decoded_output = self.model.decoded_output
             # self.style_encoded = None
@@ -49,11 +49,14 @@ class WCT(object):
                 relu_vars = [v for v in tf.trainable_variables() if decoder_prefix in v.name]
 
                 saver = tf.train.Saver(var_list=relu_vars)
-                
+
+
                 ckpt = tf.train.get_checkpoint_state(checkpoint_dir)
                 if ckpt and ckpt.model_checkpoint_path:
                     print('Restoring vars for {} from checkpoint {}'.format(relu_target, ckpt.model_checkpoint_path))
+
                     saver.restore(self.sess, ckpt.model_checkpoint_path)
+
                 else:
                     raise Exception('No checkpoint found for target {} in dir {}'.format(relu_target, checkpoint_dir))
 
@@ -61,7 +64,7 @@ class WCT(object):
     def preprocess(image):
         if len(image.shape) == 3:  # Add batch dimension
             image = np.expand_dims(image, 0)
-        return image / 255.        # Range [0,1]
+        return image / 255.  # Range [0,1]
 
     @staticmethod
     def postprocess(image):
@@ -91,16 +94,16 @@ class WCT(object):
 
         # Make sure shape is correct and pixels are in [0,1]
         content = self.preprocess(content)
-        style   = self.preprocess(style)
+        style = self.preprocess(style)
 
         s = time.time()
         stylized = self.sess.run(self.decoded_output, feed_dict={
-                                                          self.content_input: content,
-                                                          self.model.style_input: style,
-                                                          self.model.alpha: alpha,
-                                                          self.model.swap5: swap5,
-                                                          self.model.ss_alpha: ss_alpha,
-                                                          self.model.use_adain: adain})
-        print("Stylized in:",time.time() - s)
+            self.content_input: content,
+            self.model.style_input: style,
+            self.model.alpha: alpha,
+            self.model.swap5: swap5,
+            self.model.ss_alpha: ss_alpha,
+            self.model.use_adain: adain})
+        print("Stylized in:", time.time() - s)
 
         return self.postprocess(stylized[0])
