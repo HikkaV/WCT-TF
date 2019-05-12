@@ -18,7 +18,7 @@ See [here](https://github.com/Yijunmaverick/UniversalStyleTransfer) for the offi
 ## Requirements
 
 * Python 3.x
-* tensorflow 1.2.1+
+* tensorflow 1.2.1+ (it's suggested to have tensorflow-gpu)
 * keras 2.0.x
 * ~~torchfile~~ Modified torchfile.py is included that is compatible with Windows 
 * scikit-image
@@ -39,7 +39,6 @@ Optionally:
 
 3. Obtain style images. Two good sources are the [Wikiart dataset](https://www.kaggle.com/c/painter-by-numbers) and [Describable Textures Dataset](https://www.robots.ox.ac.uk/~vgg/data/dtd/).
 
-4. Run stylization for live video with `webcam.py` or for images with `stylize.py`. Both scripts share the same required arguments. For instance, to run a multi-level stylization pipeline that goes from relu5_1 -> relu4_1 -> relu3_1 -> relu2_1 -> relu1_1:
 
    `python webcam.py --checkpoints models/relu5_1 models/relu4_1 models/relu3_1 models/relu2_1 models/relu1_1 --relu-targets relu5_1 relu4_1 relu3_1 relu2_1 relu1_1 --style-size 512 --alpha 0.8 --style-path /path/to/styleimgs` 
 
@@ -76,32 +75,7 @@ There are also a couple of keyboard shortcuts:
 `stylize.py` will stylize content images and does not require OpenCV. The options are the same as for the webcam script with the addition of `--content-path`, which can be a single image file or folder, and `--out-path` to specify the output folder. Each style in `--style-path` will be applied to each content image. 
 
 
-## Running with Docker
 
-1. Download VGG19 model: `bash models/download_vgg.sh`
-
-2. Download checkpoints for the five decoders: `bash models/download_models.sh`
-
-3. Obtain style images and save them in a new folder `images` in the repository. Two good sources are the [Wikiart dataset](https://www.kaggle.com/c/painter-by-numbers) and [Describable Textures Dataset](https://www.robots.ox.ac.uk/~vgg/data/dtd/).
-
-4. Install [nvidia-docker](https://github.com/NVIDIA/nvidia-docker).
-
-5. To run the webcam example:
-
-```shell
-nvidia-docker build -t wct-tf . # It will take several minutes.
-xhost +local:root
-nvidia-docker run \
-  -ti \
-  --rm \
-  -v $PWD/models:/usr/src/app/models \
-  -v $PWD/images:/usr/src/app/images \
-  -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
-  -e QT_X11_NO_MITSHM=1 \
-  -e DISPLAY \
-  --device=/dev/video0:/dev/video0 \
-  wct-tf
-```
 
 ## Training decoders
 
@@ -174,11 +148,4 @@ Windows is now supported thanks to a [torchfile compatibility fix by @xdaimon](h
 Docker support was graciously [provided by @bryant1410](https://github.com/eridgd/WCT-TF/pull/7).
 
 
-## TODO
 
-- [ ] Interpolation between styles
-- [x] Video stylization
-- [ ] Spatial control/masking
-- [x] [Style swap](#style-swap)
-- [ ] Webcam style window threading
-- [x] ~~Forget this static graph nonsense and redo everything in PyTorch~~ Xueting Li has a [nice implementation](https://github.com/sunshineatnoon/PytorchWCT)
