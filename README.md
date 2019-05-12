@@ -84,6 +84,11 @@ There are also a couple of keyboard shortcuts:
 
 
    `python run_with_gui.py` 
+ Advantages of gui:
+ * The one doesn't need to reload the programm, so that it's easily to see the difference between results using different learning rate and different layers
+ * An efficient way of presenting this technology for the people not familiar with machine learning
+ Disadvantages :
+ * Because of a big load on processor it's hardly recommended to use a cpu version of tensorflow, if you have gpu with at least 4 GB of memory , then use tensorflow-gpu
 
 
 ## Training decoders
