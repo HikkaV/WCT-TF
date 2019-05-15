@@ -24,7 +24,7 @@ parser.add_argument('--out-path', type=str, dest='out_path', help='Output folder
 parser.add_argument('--keep-colors', action='store_true', help="Preserve the colors of the style image", default=True)
 parser.add_argument('--device', type=str, help='Device to perform compute on, e.g. /gpu:0', default='/gpu:0')
 parser.add_argument('--style-size', type=int, help="Resize style image to this size before cropping, default 512", default=0)
-parser.add_argument('--crop-size', type=int, help="Crop square size, default 256", default=0)
+parser.add_argument('--crop-size', type=int, help="Crop square size, default 256", default=100)
 parser.add_argument('--content-size', type=int, help="Resize short side of content image to this", default=0)
 parser.add_argument('--passes', type=int, help="# of stylization passes per content image", default=1)
 parser.add_argument('-r','--random', type=int, help="Choose # of random subset of images from style folder", default=0)

@@ -2,6 +2,7 @@ from run import *
 from tkinter import *
 from PIL import ImageTk, Image
 from tkinter import filedialog
+
 out_f = None
 
 
@@ -16,19 +17,32 @@ class Gui():
 
         filemenu = Menu(menu)
         menu.add_cascade(label="Commands", menu=filemenu)
-        filemenu.add_command(label="Load content and style images", command=self.open_img)
+        filemenu.add_command(label="Load content image", command=self.open_image_content)
+        filemenu.add_command(label="Load style image", command=self.open_image_style)
         filemenu.add_command(label="Run programm", command=self.run)
         filemenu.add_separator()
         filemenu.add_command(label="Change learning rate", command=self.change_eta)
         filemenu.add_command(label="Change used layers", command=self.change_layers)
+        filemenu.add_command(label="Change epochs", command=self.change_epochs)
         filemenu.add_separator()
         filemenu.add_command(label="Exit", command=lambda: sys.exit(1))
 
         self.root.mainloop()
 
+    def define_epochs(self):
+        args.passes = int(self.e2.get())
+
+    def change_epochs(self):
+        Label(self.root, text="Epochs :").grid(row=1 ,column=2)
+
+        self.e2 = Entry(self.root)
+        self.e2.insert(index=20, string='1')
+        self.e2.grid(row=1, column=3)
+        Button(self.root, text='Define epochs', command=self.define_epochs).grid(row=3, column=2, sticky=W, pady=4)
+
     def define_layers(self):
         args.relu_targets = []
-        args.checkpoints=[]
+        args.checkpoints = []
 
         if self.var5.get() == 1:
             args.relu_targets.append("relu5_1")
@@ -45,6 +59,7 @@ class Gui():
         if self.var1.get() == 1:
             args.relu_targets.append("relu1_1")
             args.checkpoints.append('models/relu1_1')
+
     def change_layers(self):
         Label(self.root, text="Used layers :").grid(row=4, sticky=W)
         self.var1 = IntVar()
@@ -73,14 +88,16 @@ class Gui():
     def open_content(self):
         filename = filedialog.askopenfilename(title='open content image',
                                               filetypes=(("jpg files", "*.jpg"),
-                                                         ('png files', '*.png'), ('jpeg files', '*.jpeg')))
+                                                         ('png files', '*.png'), ('jpeg files', '*.jpeg'),
+                                                         ('JPG files', '*.JPG')))
         args.content_path = filename
         return filename
 
     def open_style(self):
         filename = filedialog.askopenfilename(title='open style image', filetypes=(("jpg files", "*.jpg"),
-                                                                             ('png files', '*.png'),
-                                                                             ('jpeg files', '*.jpeg')))
+                                                                                   ('png files', '*.png'),
+                                                                                   ('jpeg files', '*.jpeg'),
+                                                                                   ('JPG files', '*.JPG')))
         args.style_path = filename
         return filename
 
@@ -88,8 +105,8 @@ class Gui():
         filename = filedialog.askdirectory(title='choose directory to save output image')
         args.out_path = filename
 
-    def open_img(self):
-        global flag
+    def open_image_content(self):
+
         x = self.open_content()
         img = Image.open(x)
         img = img.resize((250, 250), Image.ANTIALIAS)
@@ -100,6 +117,7 @@ class Gui():
         panel.grid(row=0, column=0)
         # panel.pack()
 
+    def open_image_style(self):
         x = self.open_style()
         img = Image.open(x)
         img = img.resize((250, 250), Image.ANTIALIAS)
